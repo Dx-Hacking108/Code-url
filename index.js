@@ -27,10 +27,15 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // --- Webhook Setup For Vercel ---
+// --- Webhook Setup For Vercel (With Freeze Bypass) ---
 if (isVercel) {
     app.post(`/bot${TOKEN}`, (req, res) => {
         bot.processUpdate(req.body);
-        res.sendStatus(200);
+        
+        // Vercel-কে জোর করে ১.৫ সেকেন্ড জাগিয়ে রাখা যাতে সে Telegram-কে রিপ্লাই দেওয়ার সময় পায়
+        setTimeout(() => {
+            res.sendStatus(200);
+        }, 1500);
     });
 
     app.get('/setwebhook', (req, res) => {
@@ -40,6 +45,7 @@ if (isVercel) {
             .catch(e => res.send(`❌ Error setting webhook: ${e.message}`));
     });
 }
+// ----------------------------------------------------
 // --------------------------------
 
 mongoose.connect(MONGO_URI)
