@@ -496,7 +496,7 @@ function handleHelp(chatId) {
 }
 
 function askRedirect(msg, name) {
-    const chatId = msg.from ? msg.from.id : msg.chat.id;
+    const chatId = msg.chat.id;
     const currentTpl = userState[chatId]?.template || 'Device';
     userState[chatId] = { name: name, step: 'await_choice', template: currentTpl };
     
@@ -507,7 +507,7 @@ function askRedirect(msg, name) {
 }
 
 async function createFinalLink(msg, name, redirectUrl) {
-    const chatId = msg.from ? msg.from.id : msg.chat.id;
+    const chatId = msg.chat.id;
     const user = await User.findOne({ chatId });
     const selectedTpl = userState[chatId]?.template || 'Device';
     
