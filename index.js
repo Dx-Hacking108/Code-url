@@ -11,42 +11,18 @@ const TOKEN = "8291862788:AAEvXOm7TSrCIjb1TxPm7rleiG_NooTgxdE"; // ⚠️ CHANGE
 const OWNER_IDS = [6703335929, 6041728084, 5136260272, 7089533955, 6125809347]; 
 const CHANNEL_ID1 = "@alphacodex369";
 const CHANNEL_ID2 = "@Termuxcodex";
-const GROUP_ID = "@code_x369"; 
+const GROUP_ID = "@code_marketx"; 
 const MONGO_URI = "mongodb+srv://darkgangdarks_db_user:aEEYR59YEVameS1y@cluster0.iyakwh0.mongodb.net/DEVICEX?retryWrites=true&w=majority"; 
 
 const START_IMG_URL = "https://graph.org/file/c3b658c9adaf0aba7153f-a22a3447d1410355a0.jpg";
 
-// Vercel serverless environment bypass - use Webhook instead of polling
-const isVercel = process.env.VERCEL || process.env.VERCEL_ENV;
-const bot = new TelegramBot(TOKEN, isVercel ? undefined : { polling: true });
+const bot = new TelegramBot(TOKEN, { polling: true });
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' })); 
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// --- Webhook Setup For Vercel ---
-// --- Webhook Setup For Vercel (With Freeze Bypass) ---
-if (isVercel) {
-    app.post(`/bot${TOKEN}`, (req, res) => {
-        bot.processUpdate(req.body);
-        
-        // Vercel-কে জোর করে ১.৫ সেকেন্ড জাগিয়ে রাখা যাতে সে Telegram-কে রিপ্লাই দেওয়ার সময় পায়
-        setTimeout(() => {
-            res.sendStatus(200);
-        }, 1500);
-    });
-
-    app.get('/setwebhook', (req, res) => {
-        const url = `https://${req.headers.host}/bot${TOKEN}`;
-        bot.setWebHook(url)
-            .then(() => res.send(`✅ Webhook set successfully to: ${url}`))
-            .catch(e => res.send(`❌ Error setting webhook: ${e.message}`));
-    });
-}
-// ----------------------------------------------------
-// --------------------------------
 
 mongoose.connect(MONGO_URI)
     .then(() => console.log('✅ MongoDB Connected'))
@@ -85,7 +61,7 @@ let activeOffer = null;
 let botUsername = "codeurlbot";
 bot.getMe().then(me => botUsername = me.username).catch(()=>{});
 
-const fontMap = {'a':'ᴀ','b':'ʙ','c':'ᴄ','d':'ᴅ','e':'ᴇ','f':'ғ','g':'ɢ','h':'ʜ','i':'ɪ','j':'ᴊ','k':'ᴋ','l':'ʟ','m':'ᴍ','n':'ɴ','o':'ᴏ','p':'ᴘ','q':'ǫ','r':'ʀ','s':'s','t':'ᴛ','u':'ᴜ','v':'ᴠ','w':'ᴡ','x':'x','y':'ʏ','z':'ᴢ','A':'ᴀ','B':'ʙ','C':'ᴄ','D':'ᴅ','E':'ᴇ','F':'ғ','G':'ɢ','H':'ʜ','I':'ɪ','J':'ᴊ','K':'ᴋ','L':'ʟ','M':'ᴍ','N':'ɴ','O':'ᴏ','P':'ᴘ','Q':'ǫ','R':'ʀ','S':'s','T':'ᴛ','U':'ᴜ','V':'ᴠ','W':'ᴡ','X':'x','Y':'ʏ','Z':'ᴢ','0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'};
+const fontMap = {'a':'ᴀ','b':'ʙ','c':'ᴄ','d':'ᴅ','e':'ᴇ','f':'ғ','g':'ɢ','h':'ʜ','i':'ɪ','j':'ᴊ','k':'ᴋ','l':'ʟ','m':'ᴍ','n':'ɴ','o':'ᴏ','p':'ᴘ','q':'ǫ','r':'ʀ','s':'s','t':'ᴛ','u':'ᴜ','v':'ᴠ','w':'ᴡ','x':'x','y':'ʏ','z':'ᴢ','A':'ᴀ','B':'ʙ','C':'ᴄ','D':'ᴅ','E':'ᴇ','F':'ғ','G':'ɢ','H':'ʜ','I':'ɪ','J':'ᴊ','K':'ᴋ','L':'ʟ','M':'ᴍ','N':'ɴ','O':'ᴏ','P':'ᴘ','Q':'ǫ','R':'ʀ','S':'s','T':'ᴛ','U':'ᴜ','V':'ᴠ','W':'ᴡ','X':'x','Y':'ʏ','Z':'ᴢ','0':'𝟶','1':'𝟷','2':'𝟸','3':'𝟹','4':'𝟺','5':'𝟻','6':'𝟼','7':'𝟽','8':'𝟾','9':'𝟿'};
 
 function _fnt(text) {
     if(!text) return "";
